@@ -1,4 +1,4 @@
-import { Context, FormOnSubmitEvent, MenuItemOnPressEvent, ScheduledJobEvent, Subreddit, TriggerContext, User, WikiPage } from "@devvit/public-api";
+import { Context, FormOnSubmitEvent, JSONObject, MenuItemOnPressEvent, Subreddit, TriggerContext, User, WikiPage } from "@devvit/public-api";
 import { confirmationForm, restoreForm } from "./main.js";
 import { compressBlob, decompressBlob, RawUsernotesUsers, ToolboxClient } from "toolbox-devvit";
 import pluralize from "pluralize";
@@ -81,7 +81,7 @@ export async function showCurrentProgress (context: Context) {
     context.ui.showToast(`Prune is in progress, ${getETA(usersProcessed, totalUsers)} remaining. Analyzed ${percentCompleted}%  of users.`);
 }
 
-export async function confirmationFormHandler (_: FormOnSubmitEvent, context: Context) {
+export async function confirmationFormHandler (_: FormOnSubmitEvent<JSONObject>, context: Context) {
     await context.redis.set(PRUNE_STAGE, PruneStage.Stage1StoringUserList);
 
     const toolbox = new ToolboxClient(context.reddit);
@@ -114,7 +114,7 @@ export async function confirmationFormHandler (_: FormOnSubmitEvent, context: Co
     });
 }
 
-export async function checkUserBatch (_: ScheduledJobEvent, context: TriggerContext) {
+export async function checkUserBatch (_: unknown, context: TriggerContext) {
     console.log("Processing batch of users");
 
     const batchSize = 50;
@@ -207,12 +207,10 @@ export async function pruneNotes (context: TriggerContext) {
         message = "Toolbox notes prune has now completed. There were no suspended, deleted or shadowbanned users with usernotes, so no changes have been made.";
     }
 
-    const appUser = await context.reddit.getAppUser();
-    await context.reddit.modMail.createConversation({
-        subredditName: subreddit.name,
-        body: message,
+    await context.reddit.modMail.createModInboxConversation({
+        subredditId: context.subredditId,
         subject: "Toolbox Notes Prune has been completed.",
-        to: appUser.username,
+        bodyMarkdown: message,
     });
 
     await context.redis.del(PRUNE_STAGE);
@@ -253,7 +251,7 @@ export async function restoreMenuHandler (_: MenuItemOnPressEvent, context: Cont
     });
 }
 
-export async function restoreFormHandler (_: FormOnSubmitEvent, context: Context) {
+export async function restoreFormHandler (_: FormOnSubmitEvent<JSONObject>, context: Context) {
     const backupContent = await context.redis.get(NOTES_BACKUP);
 
     if (!backupContent) {

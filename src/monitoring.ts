@@ -1,4 +1,4 @@
-import { ScheduledJobEvent, SettingsFormField, TriggerContext, WikiPage } from "@devvit/public-api";
+import { SettingsFormField, TriggerContext, WikiPage } from "@devvit/public-api";
 import { MAX_WIKI_PAGE_SIZE, PRUNE_STAGE } from "./constants.js";
 
 enum MonitoringSetting {
@@ -27,7 +27,7 @@ export const monitoringSettings: SettingsFormField = {
     ],
 };
 
-export async function checkFreeSpace (_: ScheduledJobEvent, context: TriggerContext) {
+export async function checkFreeSpace (_: unknown, context: TriggerContext) {
     const settings = await context.settings.getAll();
     if (!settings[MonitoringSetting.EnableFeature]) {
         return;
@@ -69,17 +69,15 @@ export async function checkFreeSpace (_: ScheduledJobEvent, context: TriggerCont
         return;
     }
 
-    const appUser = await context.reddit.getAppUser();
-
     let message = `The Toolbox Usernotes wiki page is running low on space.\n\n`;
     message += `There is ${freeSpace}% free on the page, with ${MAX_WIKI_PAGE_SIZE - wikiPage.content.length} characters overhead remaining.\n\n`;
     message += `This app will not alert you again while the free space remains under the threshold.`;
 
     await context.redis.set(alertSentRedisKey, new Date().getTime().toString());
-    await context.reddit.modMail.createConversation({
-        subredditName: subreddit.name,
-        body: message,
+
+    await context.reddit.modMail.createModInboxConversation({
+        subredditId: context.subredditId,
         subject: "Toolbox Notes wiki page is running low on space!",
-        to: appUser.username,
+        bodyMarkdown: message,
     });
 }

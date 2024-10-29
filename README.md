@@ -34,6 +34,12 @@ Monitoring is disabled by default, because if the mod team are installing the ap
 
 Old Reddit reports the Toolbox wiki page limit as 524,288 characters. However, the true limit for the Toolbox Usernotes wiki page is actually double this (1,048,576 characters). As a result, the "free space" reported by the app may not be what you expect it to be.
 
+## Change Log
+
+### v1.0.2
+
+* Modmail notifications now arrive in inbox, not Mod Notifications
+
 ## Source code and licence
 
 This app is free and open source under the BSD 3-Clause licence. The source code can be found on Github [here](https://github.com/fsvreddit/toolbox-pruner).
