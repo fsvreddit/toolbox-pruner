@@ -36,6 +36,10 @@ Old Reddit reports the Toolbox wiki page limit as 524,288 characters. However, t
 
 ## Change Log
 
+### v1.0.3
+
+* Fixes a security vulnerability related to menu items
+
 ### v1.0.2
 
 * Modmail notifications now arrive in inbox, not Mod Notifications
