@@ -6,15 +6,15 @@ This app takes a different approach, deliberately checking users slowly in order
 
 ## Prune process
 
-This app is triggered from the subreddit context menu - choose "Prune Toolbox Notes".
+This app is triggered from the subreddit context menu - choose "Prune Toolbox Notes". You are able to choose to prune notes based on whether the user is shadowbanned/deleted/suspended, on note date and user inactivity.
 
-The app will tell you how much space you have free on the Toolbox notes page. If you choose to continue, the app will check every user with Toolbox notes in the background. This will take some time, and on some subreddits with a very large number of notes it may take several hours to check users.
+The app will tell you how much space you have free on the Toolbox notes page. If you choose to continue, the app will check every user with Toolbox notes in the background. This will take some time unless the only option chosen is to prune old notes, and on some subreddits with a very large number of notes it may take 1-2 hours to check all notes.
 
 An estimate of how long is left can be obtained during this stage by pressing the "Prune Toolbox Notes" button again while the checking process is ongoing.
 
 Once all users have been checked, the Toolbox wiki page is opened by the app, and notes for all users that were found to be suspended, shadowbanned or deleted will be removed in one go. Usernotes that were added between the prune starting and the user checks finishing will not be lost.
 
-Finally, the app will send modmail to the sub confirming that it has completed its task (it will appear in Mod Discussions). Once you are happy that everything is working as it should, the app may be uninstalled if you wish.
+Finally, the app will send modmail to the sub confirming that it has completed its task. Once you are happy that everything is working as it should, the app may be uninstalled or you can keep it installed with the space monitoring function enabled.
 
 ## Restore
 
@@ -26,7 +26,7 @@ Restores can be undertaken from the subreddit context menu - choose "Restore Use
 
 This app can also be used to monitor free space on your Toolbox wiki page. If enabled, checks are made once a day at 01:00 UTC, and will create a Mod Discussion in modmail if the free space is under the threshold configured.
 
-Once an alert has been sent, further alerts will not be sent again until the space free is above the alerting threshold again. Alerts will also not be sent if a notes prune job is currently in progress.
+Once an alert has been sent, further alerts will not be sent again for a week until the space free is above the alerting threshold again. Alerts will also not be sent if a notes prune job is currently in progress.
 
 Monitoring is disabled by default, because if the mod team are installing the app to do a one-off cleanup it may not be desirable to have this running.
 
@@ -35,6 +35,12 @@ Monitoring is disabled by default, because if the mod team are installing the ap
 Old Reddit reports the Toolbox wiki page limit as 524,288 characters. However, the true limit for the Toolbox Usernotes wiki page is actually double this (1,048,576 characters). As a result, the "free space" reported by the app may not be what you expect it to be.
 
 ## Change Log
+
+### v2
+
+* Substantially faster performance!
+* Can now prune notes based on age
+* Can now prune notes based on user inactivity
 
 ### v1.0.4
 

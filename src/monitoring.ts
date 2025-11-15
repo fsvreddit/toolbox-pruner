@@ -1,5 +1,7 @@
 import { SettingsFormField, TriggerContext, WikiPage } from "@devvit/public-api";
-import { MAX_WIKI_PAGE_SIZE, PRUNE_STAGE } from "./constants.js";
+import { MAX_WIKI_PAGE_SIZE, RedisKey } from "./constants.js";
+import json2md from "json2md";
+import { addWeeks } from "date-fns";
 
 enum MonitoringSetting {
     EnableFeature = "enableMonitoring",
@@ -33,17 +35,17 @@ export async function checkFreeSpace (_: unknown, context: TriggerContext) {
         return;
     }
 
-    const pruneStage = await context.redis.get(PRUNE_STAGE);
+    const pruneStage = await context.redis.get(RedisKey.PruneStage);
     if (pruneStage) {
         console.log("Monitoring: Notes prune is in progress. Skipping this task");
         return;
     }
 
-    const subreddit = await context.reddit.getCurrentSubreddit();
+    const subredditName = context.subredditName ?? await context.reddit.getCurrentSubredditName();
 
     let wikiPage: WikiPage;
     try {
-        wikiPage = await context.reddit.getWikiPage(subreddit.name, "usernotes");
+        wikiPage = await context.reddit.getWikiPage(subredditName, "usernotes");
     } catch (error) {
         console.log("Monitoring: Error retrieving wiki page.");
         console.log(error);
@@ -53,31 +55,30 @@ export async function checkFreeSpace (_: unknown, context: TriggerContext) {
     const threshold = settings[MonitoringSetting.Threshold] as number | undefined ?? 10;
     const freeSpace = Math.round(100 * ((MAX_WIKI_PAGE_SIZE - wikiPage.content.length) / MAX_WIKI_PAGE_SIZE));
 
-    const alertSentRedisKey = "alertSent";
-
     if (freeSpace >= threshold) {
         console.log(`Monitoring: There's enough space free (${freeSpace}%, threshold ${threshold}%).`);
-        await context.redis.del(alertSentRedisKey);
+        await context.redis.del(RedisKey.AlertSent);
         return;
     }
 
     console.log(`Monitoring: Insufficient space! (${freeSpace}%, threshold ${threshold}%).`);
 
-    const alertSent = await context.redis.get(alertSentRedisKey);
+    const alertSent = await context.redis.get(RedisKey.AlertSent);
     if (alertSent) {
         console.log(`Monitoring: We have previously sent an alert, quitting.`);
         return;
     }
+    const message: json2md.DataObject[] = [
+        { p: `The Toolbox Usernotes wiki page is running low on space.` },
+        { p: `There is ${freeSpace}% free on the page, with ${MAX_WIKI_PAGE_SIZE - wikiPage.content.length} characters overhead remaining.` },
+        { p: `This app will not alert you again for another week.` },
+    ];
 
-    let message = `The Toolbox Usernotes wiki page is running low on space.\n\n`;
-    message += `There is ${freeSpace}% free on the page, with ${MAX_WIKI_PAGE_SIZE - wikiPage.content.length} characters overhead remaining.\n\n`;
-    message += `This app will not alert you again while the free space remains under the threshold.`;
-
-    await context.redis.set(alertSentRedisKey, new Date().getTime().toString());
+    await context.redis.set(RedisKey.AlertSent, new Date().getTime().toString(), { expiration: addWeeks(new Date(), 1) });
 
     await context.reddit.modMail.createModInboxConversation({
         subredditId: context.subredditId,
         subject: "Toolbox Notes wiki page is running low on space!",
-        bodyMarkdown: message,
+        bodyMarkdown: json2md(message),
     });
 }
