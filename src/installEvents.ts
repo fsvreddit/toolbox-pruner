@@ -1,6 +1,6 @@
 import { TriggerContext } from "@devvit/public-api";
 import { AppInstall, AppUpgrade } from "@devvit/protos";
-import { RedisKey, SchedulerJob } from "./constants.js";
+import { SchedulerJob } from "./constants.js";
 
 export async function handleAppInstallUpgradeEvents (_: AppInstall | AppUpgrade, context: TriggerContext) {
     console.log("Detected an install or upgrade event. Rescheduling jobs.");
@@ -16,6 +16,4 @@ export async function handleAppInstallUpgradeEvents (_: AppInstall | AppUpgrade,
         name: SchedulerJob.Monitoring,
         cron: "0 1 * * *",
     });
-
-    await context.redis.del(RedisKey.PruneStage);
 }
