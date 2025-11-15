@@ -1,6 +1,8 @@
 import { TriggerContext } from "@devvit/public-api";
 import { AppInstall, AppUpgrade } from "@devvit/protos";
-import { SchedulerJob } from "./constants.js";
+import { RedisKey, SchedulerJob } from "./constants.js";
+import { expireKeyAt } from "devvit-helpers";
+import { addHours } from "date-fns";
 
 export async function handleAppInstallUpgradeEvents (_: AppInstall | AppUpgrade, context: TriggerContext) {
     console.log("Detected an install or upgrade event. Rescheduling jobs.");
@@ -16,4 +18,8 @@ export async function handleAppInstallUpgradeEvents (_: AppInstall | AppUpgrade,
         name: SchedulerJob.Monitoring,
         cron: "0 1 * * *",
     });
+
+    if (await context.redis.exists(RedisKey.PruneStage)) {
+        await expireKeyAt(context.redis, RedisKey.PruneStage, addHours(new Date(), 6));
+    }
 }
