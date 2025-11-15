@@ -60,7 +60,7 @@ export const pruneForm: FormFunction = data => ({
         {
             type: "boolean",
             name: PruneOption.PruneDeletedUsers,
-            label: "Prune notes for suspended, deleted or shadowbanned users (slow!)",
+            label: "Prune notes for suspended, deleted or shadowbanned users",
             defaultValue: true,
         },
         {
