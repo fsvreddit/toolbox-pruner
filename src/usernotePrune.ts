@@ -428,7 +428,7 @@ export async function pruneNotes (options: PruneOptions, context: TriggerContext
         await context.redis.set(RedisKey.RevisionAfterPrune, newPage.revisionId);
 
         const freeSpace = Math.round(100 * ((MAX_WIKI_PAGE_SIZE - newPageContent.length) / MAX_WIKI_PAGE_SIZE));
-        message.push({ p: `Toolbox notes prune has now completed. ${notesPrunedCount} notes ${pluralize("has", notesPrunedCount)} been removed.` });
+        message.push({ p: `Toolbox notes prune has now completed. ${notesPrunedCount.toLocaleString()} notes ${pluralize("has", notesPrunedCount)} been removed.` });
         message.push({ p: `You now have ${freeSpace}% free space on the Toolbox wiki page.` });
         message.push({ p: "Options chosen:" });
         const bullets: string[] = [];
