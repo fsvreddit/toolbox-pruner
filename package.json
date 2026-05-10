@@ -4,20 +4,27 @@
   "version": "0.0.0",
   "license": "BSD-3-Clause",
   "type": "module",
+  "scripts": {
+    "test": "npm run test:unit",
+    "test:unit": "vitest --run"
+  },
   "dependencies": {
-    "@devvit/protos": "0.11.16",
-    "@devvit/public-api": "0.11.16",
+    "@devvit/protos": "0.12.22",
+    "@devvit/public-api": "0.12.22",
+    "@types/json2md": "^1.5.4",
+    "@types/lodash": "^4.17.20",
     "@types/pluralize": "^0.0.33",
     "date-fns": "^4.1.0",
+    "devvit-helpers": "^0.8.0",
+    "json2md": "^2.0.3",
+    "lodash": "^4.17.21",
     "pluralize": "^8.0.0",
     "toolbox-devvit": "^0.3.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.9.0",
-    "@stylistic/eslint-plugin": "^4.4.0",
-    "eslint": "^9.9.0",
+    "@fsvreddit/eslint-config": "github:fsvreddit/eslint-config",
+    "eslint": "^10.0.0",
     "typescript": "5.8.3",
-    "typescript-eslint": "^8.4.0",
-    "vitest": "^3.2.0"
+    "vitest": "^4.0.9"
   }
 }
