@@ -5,7 +5,7 @@ test("All time periods are mapped", () => {
     const unmappedPeriods: string[] = [];
     for (const period of periods) {
         try {
-            timePeriodToTimeStamp(period as TimePeriod);
+            timePeriodToTimeStamp(period);
         } catch {
             unmappedPeriods.push(period);
         }

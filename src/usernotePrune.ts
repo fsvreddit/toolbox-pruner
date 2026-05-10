@@ -122,7 +122,7 @@ export async function pruneMenuHandler (_: MenuItemOnPressEvent, context: Contex
         wikiPage = await context.reddit.getWikiPage(subredditName, "usernotes");
     } catch {
         // TODO: Check to see if app has Wiki permissions. Do different errors based on the result.
-        const appHasAccess = await hasPermissions(context.reddit, { username: context.appName, subredditName, requiredPerms: "wiki" });
+        const appHasAccess = await hasPermissions(context.reddit, { username: context.appSlug, subredditName, requiredPerms: "wiki" });
         if (appHasAccess) {
             context.ui.showToast("Cannot retrieve Toolbox Usernotes wiki page. This app only works on subreddits that use Toolbox usernotes.");
         } else {

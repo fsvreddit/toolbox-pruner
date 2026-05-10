@@ -1,4 +1,4 @@
-A Devvit app to remove historic notes from users who are suspended, shadowbanned or deleted.
+A Devvit app to remove historic notes from users who are suspended, shadowbanned or deleted, from inactive users or old usernotes.
 
 While Toolbox does include a similar function, it is often not reliable on subreddits where it is truly needed (subreddits with tens of thousands of notes, at imminent risk of running out of space) due to API limits.
 
@@ -36,10 +36,14 @@ Old Reddit reports the Toolbox wiki page limit as 524,288 characters. However, t
 
 ## Change Log
 
-### v2
+### v1.1.1
+
+* Update Devvit and dependencies, no user facing changes
+
+### v1.1.0
 
 * Substantially faster performance!
-* Can now prune notes based on age
+* Can now prune notes based on note age
 * Can now prune notes based on user inactivity
 
 ### v1.0.4
