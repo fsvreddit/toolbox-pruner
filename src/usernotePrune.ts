@@ -7,6 +7,7 @@ import { MAX_WIKI_PAGE_SIZE, RedisKey, SchedulerJob } from "./constants.js";
 import { cancelExistingJobs, hasPermissions } from "devvit-helpers";
 import json2md from "json2md";
 import { chunk } from "lodash";
+import { hasTriggerBeenHandled } from "@fsvreddit/fsv-devvit-helpers";
 
 enum PruneStage {
     Stage1StoringUserList = "storingUserList",
@@ -36,6 +37,7 @@ interface PruneOptions {
     pruneDeletedUsers: boolean;
     pruneInactiveUsers: boolean;
     pruneInactivePeriod: TimePeriod;
+    jobGuid?: string;
 }
 
 export function timePeriodToTimeStamp (period: TimePeriod): Date {
@@ -243,7 +245,7 @@ export async function confirmationFormHandler (event: FormOnSubmitEvent<JSONObje
 
     await context.scheduler.runJob({
         name: SchedulerJob.CheckUserBatch,
-        data: { ...pruneOptions },
+        data: { ...pruneOptions, jobGuid: crypto.randomUUID() },
         runAt: new Date(),
     });
 
@@ -257,6 +259,11 @@ export async function checkUserBatch (event: ScheduledJobEvent<JSONObject | unde
     const pruneOptions = event.data as PruneOptions | undefined;
     if (!pruneOptions) {
         throw new Error("No prune options provided to checkUserBatch job.");
+    }
+
+    if (pruneOptions.jobGuid && await hasTriggerBeenHandled(context.redis, `job:${pruneOptions.jobGuid}`, { expiration: addMinutes(new Date(), 5) })) {
+        console.warn(`checkUserBatch job with guid ${pruneOptions.jobGuid} has already been handled. Skipping.`);
+        return;
     }
 
     if (!pruneOptions.pruneDeletedUsers && !pruneOptions.pruneInactiveUsers) {
@@ -343,7 +350,7 @@ export async function checkUserBatch (event: ScheduledJobEvent<JSONObject | unde
 
     await context.scheduler.runJob({
         name: SchedulerJob.CheckUserBatch,
-        data: { ...pruneOptions },
+        data: { ...pruneOptions, jobGuid: crypto.randomUUID() },
         runAt: addSeconds(new Date(), 1),
     });
 }

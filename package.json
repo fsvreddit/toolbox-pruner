@@ -9,13 +9,11 @@
     "test:unit": "vitest --run"
   },
   "dependencies": {
-    "@devvit/protos": "0.12.22",
-    "@devvit/public-api": "0.12.22",
-    "@types/json2md": "^1.5.4",
-    "@types/lodash": "^4.17.20",
-    "@types/pluralize": "^0.0.33",
+    "@devvit/protos": "0.13.9",
+    "@devvit/public-api": "0.13.9",
+    "@fsvreddit/fsv-devvit-helpers": "github:fsvreddit/fsv-devvit-helpers",
     "date-fns": "^4.1.0",
-    "devvit-helpers": "^0.8.0",
+    "devvit-helpers": "^0.10.0",
     "json2md": "^2.0.3",
     "lodash": "^4.17.21",
     "pluralize": "^8.0.0",
@@ -23,6 +21,9 @@
   },
   "devDependencies": {
     "@fsvreddit/eslint-config": "github:fsvreddit/eslint-config",
+    "@types/json2md": "^1.5.4",
+    "@types/lodash": "^4.17.20",
+    "@types/pluralize": "^0.0.33",
     "eslint": "^10.0.0",
     "typescript": "5.8.3",
     "vitest": "^4.0.9"

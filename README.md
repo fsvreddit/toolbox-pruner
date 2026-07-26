@@ -36,6 +36,10 @@ Old Reddit reports the Toolbox wiki page limit as 524,288 characters. However, t
 
 ## Change Log
 
+### v1.1.2
+
+* Mitigate against duplicate actions if Dev Platform is having issues
+
 ### v1.1.1
 
 * Update Devvit and dependencies, no user facing changes
