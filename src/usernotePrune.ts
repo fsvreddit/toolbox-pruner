@@ -366,6 +366,22 @@ export async function checkUserBatchRecovery (_: unknown, context: JobContext) {
         await cancelExistingJobs(context.scheduler, SchedulerJob.CheckUserBatchRecovery);
         return;
     }
+
+    // Last run was too long ago, and prune is in progress. Restart the checkUserBatch job.
+    const pruneOptionsStr = await context.redis.get(RedisKey.PruneOptions);
+    if (!pruneOptionsStr) {
+        console.error("Prune options not found in Redis. Cannot recover checkUserBatch job.");
+        return;
+    }
+
+    const pruneOptions = JSON.parse(pruneOptionsStr) as PruneOptions;
+
+    console.log("Recovering checkUserBatch job.");
+    await context.scheduler.runJob({
+        name: SchedulerJob.CheckUserBatch,
+        data: { ...pruneOptions, jobGuid: crypto.randomUUID() },
+        runAt: new Date(),
+    });
 }
 
 export async function pruneNotes (options: PruneOptions, context: TriggerContext) {
