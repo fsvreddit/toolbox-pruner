@@ -1,0 +1,74 @@
+{
+    "$schema": "https://developers.reddit.com/schema/config-file.v1.json",
+    "name": "toolbox-pruner",
+    "permissions": {
+        "reddit": true
+    },
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite build --watch"
+    },
+    "server": {
+        "dir": "dist/server",
+        "entry": "index.cjs"
+    },
+    "settings": {
+        "subreddit": {
+            "group_MonitoringOptions": {
+                "type": "group",
+                "label": "Monitoring Options",
+                "helpText": "Allows app to alert mods if free space on Toolbox Usernotes page gets too low. Checks are made once a day.",
+                "fields": {
+                    "enableMonitoring": {
+                        "type": "boolean",
+                        "label": "Enable Free Space Monitoring",
+                        "defaultValue": false
+                    },
+                    "monitoringThreshold": {
+                        "type": "number",
+                        "label": "Free space threshold (%)",
+                        "helpText": "App will alert if free space drops below this level.",
+                        "defaultValue": 5
+                    }
+                }
+            }
+        }
+    },
+    "triggers": {
+        "onAppInstall": "/internal/triggers/app-install",
+        "onAppUpgrade": "/internal/triggers/app-upgrade"
+    },
+    "scheduler": {
+        "tasks": {
+            "checkFreeSpace": {
+                "endpoint": "/internal/tasks/check-free-space"
+            },
+            "checkUserBatchV2": {
+                "endpoint": "/internal/tasks/check-user-batch-v2"
+            },
+            "checkUserBatchRecovery": {
+                "endpoint": "/internal/tasks/check-user-batch-recovery"
+            }
+        }
+    },
+    "menu": {
+        "items": [
+            {
+                "label": "Prune Toolbox Notes",
+                "forUserType": "moderator",
+                "location": "subreddit",
+                "endpoint": "/internal/menu/prune-toolbox-notes"
+            },
+            {
+                "label": "Restore Toolbox Notes",
+                "forUserType": "moderator",
+                "location": "subreddit",
+                "endpoint": "/internal/menu/restore-toolbox-notes"
+            }
+        ]
+    },
+    "forms": {
+        "pruneToolboxNotes": "/internal/forms/prune-toolbox-notes",
+        "restoreToolboxNotes": "/internal/forms/restore-toolbox-notes"
+    }
+}

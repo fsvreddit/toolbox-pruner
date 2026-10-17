@@ -19,3 +19,8 @@ export enum SchedulerJob {
     CheckUserBatchRecovery = "checkUserBatchRecovery",
     Monitoring = "checkFreeSpace",
 }
+
+export enum FormName {
+    PruneToolboxNotes = "pruneToolboxNotes",
+    RestoreUsernotes = "restoreUsernotes",
+}

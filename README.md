@@ -32,9 +32,13 @@ Monitoring is disabled by default, because if the mod team are installing the ap
 
 ## Notes
 
-Old Reddit reports the Toolbox wiki page limit as 524,288 characters. However, the true limit for the Toolbox Usernotes wiki page is actually double this (1,048,576 characters). As a result, the "free space" reported by the app may not be what you expect it to be.
+Old Reddit reports the Toolbox wiki page limit as 524,288 characters. However, the true limit for the Toolbox Usernotes wiki page is actually double this (1,048,576 characters). As a result, the "free space" reported by the app may not be what you expect it to be if you check Old Reddit's wiki editor.
 
 ## Change Log
+
+### v1.2.1
+
+* Update Devvit and migrate app to the Devvit Web framework. No user facing changes in this version.
 
 ### v1.2.0
 
